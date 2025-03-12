@@ -1,39 +1,25 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { AuthProvider } from "@/context/authContext";
+import { DataProvider } from "@/context/dataContext";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+    <AuthProvider>
+      <DataProvider>
+      <Stack screenOptions={{ contentStyle: { backgroundColor: '#353540' } }}>
+      <Stack.Screen name="splashScreen" options={{ title: "Splash screen",headerShown: false}}/>
+      <Stack.Screen name="welcome" options={{ title: "Welcome", headerShown : false}}/>
+      <Stack.Screen name="welcome2" options={{ title: "welcome2", headerShown : false}}/>
+      <Stack.Screen name="welcome3" options={{ title: "welcome3", headerShown : false}}/>
+      <Stack.Screen name="chat" options={{ title: "chat", headerShown : false}}/>
+      <Stack.Screen name="dashboard" options={{ title: "dashboard", headerShown : false}}/>
+      <Stack.Screen name="login" options={{ title: "login", headerShown : false}}/>
+      <Stack.Screen name="signUp" options={{ title: "login", headerShown : false}}/>
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+
+      </DataProvider>
+    </AuthProvider>
+  )
+  
 }
