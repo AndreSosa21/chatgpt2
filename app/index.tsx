@@ -1,6 +1,23 @@
-import {Button, Text, View } from "react-native";
+import { useState, useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
+import { useRouter } from "expo-router";
+import SplashScreen from "./splashScreen"; // Importa la pantalla de Splash
 
 export default function Index() {
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+      router.push("/welcome"); // Redirige a la pantalla de bienvenida
+    }, 3000); // 3 segundos de espera
+  }, []);
+
+  if (loading) {
+    return <SplashScreen />;
+  }
+
   return (
     <View
       style={{
@@ -8,13 +25,8 @@ export default function Index() {
         justifyContent: "center",
         alignItems: "center",
       }}
-      
     >
-      <Text>hola mundo</Text>
-      <Button
-        title = "Press me"
-      
-      />
+      <ActivityIndicator size="large" color="#fff" />
     </View>
   );
 }

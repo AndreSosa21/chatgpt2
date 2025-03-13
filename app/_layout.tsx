@@ -8,6 +8,7 @@ export default function RootLayout() {
     <AuthProvider>
       <DataProvider>
       <Stack screenOptions={{ contentStyle: { backgroundColor: '#353540' } }}>
+      <Stack.Screen name="index" options={{ title: "chatgpt",headerShown: false}}/> 
       <Stack.Screen name="splashScreen" options={{ title: "Splash screen",headerShown: false}}/>
       <Stack.Screen name="welcome" options={{ title: "Welcome", headerShown : false}}/>
       <Stack.Screen name="welcome2" options={{ title: "welcome2", headerShown : false}}/>
