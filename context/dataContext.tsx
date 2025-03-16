@@ -1,17 +1,19 @@
 
 import { db } from "@/utils/FirebaseConfig";
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { doc, setDoc, getDocs, collection, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, setDoc, getDocs, getDoc, collection, updateDoc, arrayUnion, deleteDoc } from "firebase/firestore";
 import { Message } from "@/interfaces/AppInterfaces";
 import { APIResponse } from '@/interfaces/Responses';
+import { setChats } from "../app/dashboard";
 
 interface DataContextProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  getMessages: (title: string) => Promise<void>;
+  getMessages: (userId: string,title: string) => Promise<void>;
   saveMessageToFirebase: (userId: string, title: string, message: Message) => Promise<void>;
   getResponse: (userid: string, input: string) => Promise<void>;
   isLoading: boolean;
+  clearConversations: (userId: string) => Promise<void>;
 }
 
 export const DataContext = createContext({} as DataContextProps);
@@ -22,12 +24,19 @@ export const DataProvider = ({ children }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentChatTitle, setCurrentChatTitle] = useState("");
 
-  async function getMessages(title: string) {
+  
+  async function getMessages(userId: string, title: string) {
     try {
-      const chatSnap = await getDocs(collection(db, `chats/${title}/messages`));
-      if (!chatSnap.empty) {
-        const chatData = chatSnap.docs.map(doc => doc.data() as Message);
-        setMessages(chatData || []);
+      // Ruta al documento
+      const chatDocRef = doc(db, `chats/${userId}/titles`, title);
+      const chatDocSnap = await getDoc(chatDocRef);
+      
+      if (chatDocSnap.exists()) {
+        const docData = chatDocSnap.data();
+        const chatData = docData?.messages || [];
+        setMessages(chatData);
+      } else {
+        setMessages([]);
       }
     } catch (error) {
       console.error("Error obteniendo mensajes:", error);
@@ -54,15 +63,17 @@ export const DataProvider = ({ children }: any) => {
 
   const getResponse = async (userId: string, input:string ) => {
     if (!input.trim()) return;
+   
 
     const chatTitle = currentChatTitle || input.split(" ").slice(0, 4).join(" ");
+    console.log("input", chatTitle);
     if (!currentChatTitle) {
       setCurrentChatTitle(chatTitle);
     }
 
     const userMessage: Message = {
       text: input,
-      sender: "user",
+      sender: userId,
       timestamp: new Date().toISOString(),
     };
     setMessages(prev => [...prev, userMessage]);
@@ -88,7 +99,7 @@ export const DataProvider = ({ children }: any) => {
                     timestamp: new Date().toISOString()
                 };
                 setMessages((prev) => [...prev, botMessage]);
-                await saveMessageToFirebase("userId", chatTitle, botMessage);
+                await saveMessageToFirebase(userId, chatTitle, botMessage);
             } catch (error) {
                 console.error("Error:", error);
             } finally {
@@ -96,7 +107,20 @@ export const DataProvider = ({ children }: any) => {
                 setInput("");
             }
         };
-    
+        async function clearConversations(userId: string) {
+          try {
+              const titlesRef = collection(db, `chats/${userId}/titles`);
+              const snapshot = await getDocs(titlesRef);
+              
+              
+              const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+              await Promise.all(deletePromises);
+      
+              console.log("Títulos eliminados correctamente.");
+          } catch (error) {
+              console.error("Error al borrar los títulos:", error);
+          }
+      }
     
 
     return <DataContext.Provider
@@ -106,7 +130,8 @@ export const DataProvider = ({ children }: any) => {
             getMessages,
             saveMessageToFirebase,
             getResponse,
-            isLoading
+            isLoading,
+            clearConversations
             
         }}
     >

@@ -1,15 +1,21 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/utils/FirebaseConfig';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { ThemeContext } from '../context/themeContext';
+import { DataContext } from '@/context/dataContext';
 
+const [chats, setChats] = useState<{ id: string; title: string }[]>([]);
+export { setChats };
 export default function Dashboard() {
     const router = useRouter();
     const { userId } = useLocalSearchParams();
     console.log("userid", userId);
-    
     const [chats, setChats] = useState<{ id: string; title: string }[]>([]);
+   
+    const { theme,darkMode,setDarkMode } = useContext(ThemeContext);
+    const { clearConversations } = useContext(DataContext);
 
     async function getChats() {
         const chatsCol = collection(db, `chats/${userId}/titles`);
@@ -17,7 +23,7 @@ export default function Dashboard() {
         const chatsList = chatsSnapshot.docs.map(doc => ({ id: doc.id, title: doc.data().title }));
         setChats(chatsList);
     }
-
+    
     useEffect(() => {
         getChats();
     }, []);
@@ -26,9 +32,13 @@ export default function Dashboard() {
         
          router.push("/welcome");
     };
+    const handleClearChats = async () => {
+        await clearConversations(userId as string);
+        getChats(); // 🔹 Vuelve a cargar los títulos en Dashboard
+    };
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#202123' }}>
+        <View style={{ flex: 1, backgroundColor: theme.background }}>
             <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
                 <View style={{
                     flexDirection: 'row',
@@ -41,13 +51,13 @@ export default function Dashboard() {
                     <View style={{ alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'center' }}>
                         <Image
                             source={require('../assets/images/chat.png')}
-                            style={{ width: 25, height: 25, tintColor: 'white' }}
+                            style={{ width: 25, height: 25, tintColor: theme.ImageBackground }}
                         />
-                        <Text style={{ color: '#fff', fontSize: 16, paddingInlineStart: 20 }}>{'New Chat'}</Text>
+                        <Text style={{ color: theme.text, fontSize: 16, paddingInlineStart: 20 }}>{'New Chat'}</Text>
                     </View>
                     
                     <TouchableOpacity onPress={() => router.push({ pathname: '/chat', params: {  userId: userId  } })}>
-                        <Text style={{ color: '#fff', fontSize: 16 }}>{'>'}</Text>
+                        <Text style={{ color: theme.text, fontSize: 16 }}>{'>'}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -65,15 +75,15 @@ export default function Dashboard() {
                         <View style={{ alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'center' }}>
                             <Image
                                 source={require('../assets/images/chat.png')}
-                                style={{ width: 25, height: 25, tintColor: 'white' }}
+                                style={{ width: 25, height: 25, tintColor: theme.ImageBackground }}
                             />
-                            <Text style={{ color: '#fff', fontSize: 16, paddingInlineStart: 20 }}>
+                            <Text style={{ color: theme.text, fontSize: 16, paddingInlineStart: 20 }}>
                                 {chat.id}
                             </Text>
                         </View>
 
                         <TouchableOpacity onPress={() => router.push({ pathname: '/chat', params: { chatTitle: chat.id, userId: userId  } })}>
-                            <Text style={{ color: '#fff', fontSize: 16 }}>{'>'}</Text>
+                            <Text style={{ color: theme.text, fontSize: 16 }}>{'>'}</Text>
                         </TouchableOpacity>
                     </View>
                 ))}
@@ -87,36 +97,43 @@ export default function Dashboard() {
                 <View style={{ height: 2, backgroundColor: '#444' }} />
 
                 <View style={{ flexDirection: 'column', paddingTop: 20, paddingHorizontal: 20 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+                    <TouchableOpacity   onPress={handleClearChats} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/iconoBasura.png')}
-                            style={{ width: 25, height: 25, tintColor: 'white' }}
+                            style={{ width: 25, height: 25, tintColor: theme.ImageBackground }}
                         />
-                        <Text style={{ color: '#fff', fontSize: 16, paddingLeft: 20 }}>{'Clear conversations'}</Text>
-                    </View>
+                        <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Clear conversations'}</Text>
+                    </TouchableOpacity>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/perfil.png')}
-                            style={{ width: 26, height: 26, tintColor: 'white' }}
+                            style={{ width: 26, height: 26, tintColor: theme.ImageBackground }}
                         />
-                        <Text style={{ color: '#fff', fontSize: 16, paddingLeft: 20 }}>{'Upgrade to Plus'}</Text>
+                        <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Upgrade to Plus'}</Text>
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+                    <TouchableOpacity
+                     onPress={() => {
+                        console.log("Cambiando tema...", darkMode); // Ver si se ejecuta
+                        setDarkMode(!darkMode);
+                        console.log("Cambiando tema...", darkMode); 
+                    }} 
+                    style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}
+                    >
                         <Image
                             source={require('../assets/images/light.png')}
-                            style={{ width: 26, height: 26, tintColor: 'white' }}
+                            style={{ width: 26, height: 26, tintColor: theme.ImageBackground }}
                         />
-                        <Text style={{ color: '#fff', fontSize: 16, paddingLeft: 20 }}>{'Light mode'}</Text>
-                    </View>
+                        <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Light mode'}</Text>
+                    </TouchableOpacity>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/update.png')}
-                            style={{ width: 23, height: 23, tintColor: 'white' }}
+                            style={{ width: 23, height: 23, tintColor: theme.ImageBackground }}
                         />
-                        <Text style={{ color: '#fff', fontSize: 16, paddingLeft: 20 }}>{'Updates and FAQ'}</Text>
+                        <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Updates and FAQ'}</Text>
                     </View>
 
                     {/* Aquí envolvemos la sección de Logout en un TouchableOpacity */}

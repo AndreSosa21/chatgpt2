@@ -1,10 +1,13 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "@/context/authContext";
 import { DataProvider } from "@/context/dataContext";
+import { ThemeProvider } from "@/context/themeContext";
+
 
 
 export default function RootLayout() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <DataProvider>
       <Stack screenOptions={{ contentStyle: { backgroundColor: '#353540' } }}>
@@ -18,9 +21,9 @@ export default function RootLayout() {
       <Stack.Screen name="login" options={{ title: "login", headerShown : false}}/>
       <Stack.Screen name="signUp" options={{ title: "login", headerShown : false}}/>
       </Stack>
-
-      </DataProvider>
+    </DataProvider>
     </AuthProvider>
+    </ThemeProvider>
   )
   
 }
