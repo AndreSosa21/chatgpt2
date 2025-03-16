@@ -1,50 +1,156 @@
-# Welcome to your Expo app 👋
+# **Chatgpt2 - AI Chatbot App**
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+ChatGPT2 is an AI-powered chatbot application built using **React Native** with **Expo Router** and Firebase authentication. This project allows users to chat with an AI assistant, manage conversations, and store messages in Firebase.
 
-## Get started
+---
 
-1. Install dependencies
+## **📂 Project Structure**
+The project is structured as follows:
 
-   ```bash
-   npm install
-   ```
+📦 CHATGPT2
 
-2. Start the app
+├── .expo/                     # Expo-related configurations
 
-   ```bash
-    npx expo start
-   ```
+├── app/                       # Main application screens
+      │  
+      ├── chat.tsx               # Chat screen where users interact with the AI
+│   
+   ├── dashboard.tsx          # Dashboard with chat history
+│   
+   ├── index.tsx              # Splash screen before redirection
+│   
+   ├── login.tsx              # User login screen
+│   
+   ├── signUp.tsx             # User registration screen
+│   
+   ├── welcome.tsx            # Initial welcome screen
+│   
+   ├── welcome2.tsx           # Capabilities introduction screen
+│   
+   ├── welcome3.tsx           # Limitations information screen
+│   
+   ├── splashScreen.tsx       # App loading screen
+│   
+   ├── _layout.tsx            # Layout configuration with providers
 
-In the output, you'll find options to open the app in a
+├── assets/                     # Static assets like images, fonts
+│   
+   ├── fonts/                  # Custom fonts
+│   
+   ├── images/                 # App images and icons
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+├── context/                    # Contexts for state management
+│   
+   ├── authContext.tsx         # Handles authentication (sign in, sign up, logout)
+│   
+   ├── dataContext.tsx         # Manages chat history and message storage
+│   
+   ├── themeContext.tsx        # Provides light/dark theme support
+│   
+   ├── ValidationContext.tsx   # Handles form validations and error messages
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+├── interfaces/                 # TypeScript interfaces
+│   
+   ├── AppInterfaces.ts        # Defines message and metadata structures
+│   
+   ├── Responses.ts            # Defines API response structure
 
-## Get a fresh project
+├── utils/                      # Utility functions (e.g., Firebase config)
+│   
+   ├── FirebaseConfig.ts       # Firebase authentication and database config
 
-When you're ready, run:
+├── .gitignore                  # Files to ignore in version control
 
-```bash
-npm run reset-project
+├── app.json                    # Expo configuration file
+
+├── tsconfig.json               # TypeScript configuration
+
+├── package.json                # Dependencies and scripts
+
+└── README.md                   # Project documentation
+
+
+---
+
+## **🚀 Features**
+✅ **User Authentication**: Users can register and log in using Firebase authentication.  
+✅ **AI Chatbot**: Users can chat with an AI-powered assistant.  
+✅ **Chat History**: Stores past conversations in Firebase for later access.  
+✅ **Dark & Light Theme**: Users can switch between dark and light themes.  
+✅ **Validation Handling**: Ensures correct email format, password length, and login credentials.  
+✅ **Error Messages**: Displays meaningful error messages for authentication failures.  
+
+---
+
+## **🛠️ Technologies Used**
+- **React Native** (Expo)
+- **Firebase** (Authentication & Firestore)
+- **TypeScript** (For type safety)
+- **Expo Router** (Navigation)
+- **Context API** (Global state management)
+
+---
+
+## **📌 Installation & Setup**
+### **1️⃣ Clone the Repository**
+```sh
+git clone https://github.com/AndreSosa21/Chatgpt2.git
+cd chatgpt2
 ```
+2️⃣ Install Dependencies
+```sh
+npm install
+```
+3️⃣ Configure Firebase
+```sh
+Create a Firebase project in the Firebase Console.
+Enable Authentication (Email/Password).
+Set up a Cloud Firestore Database.
+Copy your Firebase credentials into FirebaseConfig.ts.
+```
+4️⃣ Run the Project
+```sh
+expo start
+```
+📖 Application Overview
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+🔹 Authentication Context (authContext.tsx)
+handleSignUp → Registers a new user with Firebase.
+handleLogin → Signs in an existing user.
+handleLogout → Logs the user out.
+signUp / login → Navigation functions.
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
+🔹 Chat Data Management (dataContext.tsx)
+getChats → Fetches the user's chat history from Firestore.
+getMessages → Retrieves messages from a specific chat.
+saveMessageToFirebase → Saves messages in Firestore.
+getResponse → Calls the AI API and saves responses.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Join the community
+🔹 Validation (ValidationContext.tsx)
+validateEmail → Ensures email format is correct.
+validatePassword → Ensures password is at least 8 characters.
+validateLogin → Checks if the user exists in Firebase before login.
+errorMessage → Stores validation errors.
 
-Join our community of developers creating universal apps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+🔹 Theme Support (themeContext.tsx)
+Dark & Light Themes managed via Context API.
+
+📄 License
+This project is licensed under the MIT License.
+
+📬 Contact
+For any inquiries, feel free to reach out:
+📧 Email: andreasosro@unisabana.edu.co
+🔗 GitHub: AndreSosa21
+
+🚀 Happy coding! 🚀
+
+This **README.md** file provides:
+- A clear **project structure**
+- **Installation & setup instructions**
+- **Features and technologies used**
+- **Description of each important context**
+- **License & contact information**
