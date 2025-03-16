@@ -4,72 +4,76 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 interface ValidationContextProps {
-    validateEmail: (email: string) => boolean;
-    validatePassword: (password: string) => boolean;
-    validateLogin: (email: string, password: string) => Promise<boolean>;
-    errorMessage: string | null;
-    setErrorMessage: (message: string | null) => void;
+    validateEmail: (email: string) => boolean; // Function to validate email format
+    validatePassword: (password: string) => boolean; // Function to validate password length
+    validateLogin: (email: string, password: string) => Promise<boolean>; // Function to validate login credentials
+    errorMessage: string | null; // Stores any validation or authentication errors
+    setErrorMessage: (message: string | null) => void; // Function to set error messages
 }
 
+// 1. Create the validation context
 export const ValidationContext = createContext({} as ValidationContextProps);
 
+// 2. Create the ValidationProvider component
 export const ValidationProvider = ({ children }: any) => {
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // State to store error messages
 
-    // 🔹 Validar Formato de Correo
+    // 🔹 Validate Email Format
     const validateEmail = (email: string): boolean => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regular expression for email validation
         if (!emailRegex.test(email)) {
-            setErrorMessage("Correo inválido. Usa un formato válido.");
+            setErrorMessage("Invalid email format. Please use a valid email.");
             return false;
         }
         return true;
     };
 
-    // 🔹 Validar Contraseña (mínimo 8 caracteres)
+    // 🔹 Validate Password (minimum 8 characters)
     const validatePassword = (password: string): boolean => {
         if (password.length < 8) {
-            setErrorMessage("La contraseña debe tener al menos 8 caracteres.");
+            setErrorMessage("Password must be at least 8 characters long.");
             return false;
         }
         return true;
     };
 
-    // 🔹 Validar si el usuario existe en Firebase antes de hacer login
+    // 🔹 Validate if the user exists in Firebase before logging in
     const validateLogin = async (email: string, password: string): Promise<boolean> => {
-        setErrorMessage(null); // 🔄 Reiniciar mensaje de error antes de validar
+        setErrorMessage(null); // 🔄 Reset error message before validation
 
         if (!validateEmail(email) || !validatePassword(password)) {
-            return false;
+            return false; //  Stop login attempt if email or password are invalid
         }
 
         try {
+            console.log("Attempting to log in..."); // Debugging log
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // ✅ Verificar si el usuario existe en Firestore
+            // ✅ Check if the user exists in Firestore
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
 
             if (!userSnap.exists()) {
-                setErrorMessage("El usuario no está registrado en la base de datos.");
+                setErrorMessage("User is not registered in the database.");
                 return false;
             }
 
-            return true;
+            return true; // ✅ Login successful
         } catch (error: any) {
-            console.log("❌ Error en la autenticación:", error.message);
-            
+            console.log(" Authentication error:", error.message); // Debugging log
+
+            // Handle specific Firebase authentication errors
             if (error.code === "auth/invalid-credential") {
-                setErrorMessage("Correo o contraseña incorrectos.");
+                setErrorMessage("Incorrect email or password.");
             } else if (error.code === "auth/user-not-found") {
-                setErrorMessage("El usuario no existe.");
+                setErrorMessage("User does not exist.");
             } else if (error.code === "auth/too-many-requests") {
-                setErrorMessage("Demasiados intentos fallidos. Inténtalo más tarde.");
+                setErrorMessage("Too many failed attempts. Try again later.");
             } else {
-                setErrorMessage("Error al iniciar sesión.");
+                setErrorMessage("Error logging in.");
             }
-            return false;
+            return false; // Login failed
         }
     };
 
@@ -88,5 +92,5 @@ export const ValidationProvider = ({ children }: any) => {
     );
 };
 
-// Hook para usar el contexto
+// 3. Custom hook to use the validation context
 export const useValidation = () => useContext(ValidationContext);

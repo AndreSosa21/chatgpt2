@@ -17,14 +17,14 @@ export default function Chat() {
     // useEffect hook to get messages when chatTitle or userId changes
     useEffect(() => {
         if (!chatTitle) {
-            console.log("No hay chat activo, esperando nuevo chat...");
-            setMessages([]); // ✅ Limpia mensajes si no hay un título
+            console.log("Waiting for chat title...");
+            setMessages([]);
             return;
         }
     
         if (chatTitle && userId) {
-            console.log(`Cargando mensajes para el chat: "${chatTitle}"`);
-            setMessages([]); // ✅ Limpiar mensajes antes de cargar uno nuevo
+            console.log(`messages for.. "${chatTitle}"`);
+            setMessages([]);
             getMessages(userId as string, chatTitle as string);
         }
     }, [chatTitle, userId]);
@@ -68,7 +68,7 @@ export default function Chat() {
                 />
             </View>
 
-            {/* Divisory */}
+            {/* Division line */}
             <View style={{ height: 1, backgroundColor: theme.borderColor, marginTop:20 }} />
 
             <FlatList

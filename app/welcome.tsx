@@ -4,6 +4,7 @@ import React from 'react';
 
 export default function Welcome() {
   const router = useRouter();
+  // Main view of the welcome screen
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#353540', padding: 50 }}>
       
@@ -14,16 +15,16 @@ export default function Welcome() {
       <Text style={{ color: 'white', fontSize: 28, fontWeight: 'bold', marginBottom: 5 }}>Welcome to</Text>
       <Text style={{ color: 'white', fontSize: 28, fontWeight: 'bold', marginBottom: 10 }}>ChatGPT</Text>
 
-      {/* Subtítulo */}
+      {/* Subtitle*/}
       <Text style={{ color: '#A0A0A0', fontSize: 14, textAlign: 'center', marginBottom: 30 }}>
         Ask anything, get your answer
       </Text>
-      {/* Subtítulo */}
+      {/* Subtitle*/}
       <Text style={{ color: '#A0A0A0', fontSize: 20, textAlign: 'center', marginBottom: 30 }}>
         Examples
       </Text>
 
-      {/* Caja de ejemplo */}
+      {/* examples */}
       <View style={{ width: '100%', backgroundColor: '#45475A', padding: 15, borderRadius: 10, marginBottom: 15 }}>
         <Text style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>"Explain quantum computing in simple terms"</Text>
       </View>
@@ -36,19 +37,18 @@ export default function Welcome() {
         <Text style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>"How do I make an HTTP request in Javascript?"</Text>
       </View>
 
-      {/* Indicadores de progreso */}
+      {/* progress bars */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 20 }}>
         <View style={{ width: 10, height: 5, backgroundColor: '#58A081', borderRadius: 5, marginHorizontal: 3 }} />
         <View style={{ width: 10, height: 5, backgroundColor: '#707070', borderRadius: 5, marginHorizontal: 3 }} />
         <View style={{ width: 10, height: 5, backgroundColor: '#707070', borderRadius: 5, marginHorizontal: 3 }} />
       </View>
 
-      {/* Botón "Next" */}
+      {/* Button "Next" */}
       <TouchableOpacity 
-      style={{ backgroundColor: '#58A081', width: '90%', padding: 15, borderRadius: 10, alignItems: 'center' }}
-      onPress={() => router.push('/welcome2')}>
+        style={{ backgroundColor: '#58A081', width: '90%', padding: 15, borderRadius: 10, alignItems: 'center' }}
+        onPress={() => router.push('/welcome2')}>
         <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Next</Text>
-        
       </TouchableOpacity>
 
     </View>

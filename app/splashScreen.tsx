@@ -2,6 +2,7 @@ import { View, Image, ActivityIndicator } from "react-native";
 import React from "react";
 
 export default function SplashScreen() {
+  // Main view of the splash screen
   return (
     <View
       style={{

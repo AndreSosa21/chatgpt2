@@ -14,13 +14,13 @@ export default function Dashboard() {
     const { chats,handleClearChats , getChats, setMessages, setCurrentChatTitle} = useContext(DataContext);
 
    
-    
+    // useEffect hook to getChats when userId changes
     useEffect(() => {
         getChats(userId as string);
     }, [userId]);
 
     
-
+    // Main view of the dashboard
     return (
         <View style={{ flex: 1, backgroundColor: theme.background }}>
             <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
@@ -41,17 +41,18 @@ export default function Dashboard() {
                     </View>
                     
                     <TouchableOpacity  onPress={() => {
-                    setMessages([]); 
-                    setCurrentChatTitle("");// ✅ Limpia los mensajes ANTES de navegar
-                     // ✅ Restablecer el título del chat
-                    router.push({ pathname: '/chat', params: { userId } });
-    }}>
+                        // Clear messages and current chat title
+                        setMessages([]); 
+                        setCurrentChatTitle("");
+                     router.push({ pathname: '/chat', params: { userId } });
+                    }}>
                         <Text style={{ color: theme.text, fontSize: 16 }}>{'>'}</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={{ height: 1, backgroundColor: '#444' }} />
                 
+                {/* styles for each chat*/}
                 {chats.map(chat => (
                     <View key={chat.id} style={{
                         flexDirection: 'row',
@@ -77,15 +78,14 @@ export default function Dashboard() {
                     </View>
                 ))}
 
-                <View style={{ height: 1, backgroundColor: '#444' }} />
-
-                <View style={{ height: 400, paddingHorizontal: 20 }}>
-                    {/* Aquí se agregarán dinámicamente los chats guardados */}
-                </View>
+                    <View style={{ height: 1, backgroundColor: '#444' }} />
+                    <View style={{ height: 400, paddingHorizontal: 20 }}></View>
 
                 <View style={{ height: 2, backgroundColor: '#444' }} />
 
                 <View style={{ flexDirection: 'column', paddingTop: 20, paddingHorizontal: 20 }}>
+                    
+                    {/* Clear conversations button */}
                     <TouchableOpacity   onPress={() => handleClearChats(userId as string)} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/iconoBasura.png')}
@@ -94,6 +94,8 @@ export default function Dashboard() {
                         <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Clear conversations'}</Text>
                     </TouchableOpacity>
 
+                    
+                    {/* Upgrade plus */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/perfil.png')}
@@ -101,12 +103,14 @@ export default function Dashboard() {
                         />
                         <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Upgrade to Plus'}</Text>
                     </View>
-
+                    
+                    
+                    {/* Change theme button */}
                     <TouchableOpacity
                      onPress={() => {
-                        console.log("Cambiando tema...", darkMode); // Ver si se ejecuta
+                        console.log("Changing theme...", darkMode);
                         setDarkMode(!darkMode);
-                        console.log("Cambiando tema...", darkMode); 
+                        console.log("Changing theme...", darkMode); 
                     }} 
                     style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}
                     >
@@ -117,6 +121,7 @@ export default function Dashboard() {
                         <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Light mode'}</Text>
                     </TouchableOpacity>
 
+                    
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/update.png')}
@@ -125,7 +130,8 @@ export default function Dashboard() {
                         <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{'Updates and FAQ'}</Text>
                     </View>
 
-                    {/* Aquí envolvemos la sección de Logout en un TouchableOpacity */}
+                    
+                    {/* Logout button */}
                     <TouchableOpacity 
                         onPress={handleLogout}
                         style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}

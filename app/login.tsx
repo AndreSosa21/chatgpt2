@@ -13,12 +13,14 @@ export default function LoginScreen() {
   const { errorMessage } = useContext(ValidationContext);
 
   
-
+  // Main view of the login screen
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#222' }}>
     <Image source={require('../assets/images/chatgpt2.png')} style={{ width: 50, height: 50, marginBottom: 30 }} resizeMode="contain" />
       <Text style={{ fontSize: 26, fontWeight: 'bold', color: '#fff', marginBottom: 20 }}>Welcome back</Text>
       <View style={{ width: '90%', padding: 20, backgroundColor: '#333', borderRadius: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 5, elevation: 8 }}>
+         
+         {/* email input*/}
         <Text style={{ fontSize: 14, color: '#aaa', marginBottom: 5 }}>Email address</Text>
         <TextInput
           style={{ width: '100%', padding: 10, marginBottom: 15, borderRadius: 5, backgroundColor: '#fff', color: '#000' }}
@@ -27,6 +29,8 @@ export default function LoginScreen() {
           onChangeText={setEmail}
           keyboardType="email-address"
         />
+         
+         {/* password input*/}
         <Text style={{ fontSize: 14, color: '#aaa', marginBottom: 5 }}>Password</Text>
         <TextInput
           style={{ width: '100%', padding: 10, marginBottom: 15, borderRadius: 5, backgroundColor: '#fff', color: '#000' }}
@@ -35,9 +39,10 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           secureTextEntry
         />
+         {/* In case, error message*/}
         {errorMessage && <Text style={{ color: "red", marginBottom: 10 }}>{errorMessage}</Text>}
         
-
+        {/* Continue button*/}
         <TouchableOpacity style={{ backgroundColor: '#58A081', padding: 15, borderRadius: 5, alignItems: 'center', marginBottom: 10 }} onPress={() => handleLogin(email, password)}>
           <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Continue</Text>
         </TouchableOpacity>

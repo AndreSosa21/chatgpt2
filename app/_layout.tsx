@@ -25,7 +25,6 @@ export default function RootLayout() {
           </Stack>
         </DataProvider>
       </AuthProvider>
-
       </ValidationProvider>
     </ThemeProvider>
   )
