@@ -1,4 +1,4 @@
-# **Chatgpt2 - AI Chatbot App**
+# **Chatgpt2 - AI Chatbot App by Andrea Sosa**
 
 ChatGPT2 is an AI-powered chatbot application built using **React Native** with **Expo Router** and Firebase authentication. This project allows users to chat with an AI assistant, manage conversations, and store messages in Firebase.
 
@@ -143,7 +143,9 @@ This project is licensed under the MIT License.
 
 📬 Contact
 For any inquiries, feel free to reach out:
+
 📧 Email: andreasosro@unisabana.edu.co
+
 🔗 GitHub: AndreSosa21
 
 🚀 Happy coding! 🚀
