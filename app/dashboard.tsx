@@ -1,41 +1,25 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/utils/FirebaseConfig';
 import { useContext, useEffect, useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ThemeContext } from '../context/themeContext';
 import { DataContext } from '@/context/dataContext';
+import { AuthContext } from '@/context/authContext';
 
-const [chats, setChats] = useState<{ id: string; title: string }[]>([]);
-export { setChats };
+
 export default function Dashboard() {
     const router = useRouter();
     const { userId } = useLocalSearchParams();
-    console.log("userid", userId);
-    const [chats, setChats] = useState<{ id: string; title: string }[]>([]);
-   
     const { theme,darkMode,setDarkMode } = useContext(ThemeContext);
-    const { clearConversations } = useContext(DataContext);
+    const { handleLogout } = useContext(AuthContext);
+    const { chats,handleClearChats , getChats, setMessages, setCurrentChatTitle} = useContext(DataContext);
 
-    async function getChats() {
-        const chatsCol = collection(db, `chats/${userId}/titles`);
-        const chatsSnapshot = await getDocs(chatsCol);
-        const chatsList = chatsSnapshot.docs.map(doc => ({ id: doc.id, title: doc.data().title }));
-        setChats(chatsList);
-    }
+   
     
     useEffect(() => {
-        getChats();
-    }, []);
+        getChats(userId as string);
+    }, [userId]);
 
-    const handleLogout  = () => {
-        
-         router.push("/welcome");
-    };
-    const handleClearChats = async () => {
-        await clearConversations(userId as string);
-        getChats(); // 🔹 Vuelve a cargar los títulos en Dashboard
-    };
+    
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -56,7 +40,12 @@ export default function Dashboard() {
                         <Text style={{ color: theme.text, fontSize: 16, paddingInlineStart: 20 }}>{'New Chat'}</Text>
                     </View>
                     
-                    <TouchableOpacity onPress={() => router.push({ pathname: '/chat', params: {  userId: userId  } })}>
+                    <TouchableOpacity  onPress={() => {
+                    setMessages([]); 
+                    setCurrentChatTitle("");// ✅ Limpia los mensajes ANTES de navegar
+                     // ✅ Restablecer el título del chat
+                    router.push({ pathname: '/chat', params: { userId } });
+    }}>
                         <Text style={{ color: theme.text, fontSize: 16 }}>{'>'}</Text>
                     </TouchableOpacity>
                 </View>
@@ -82,7 +71,7 @@ export default function Dashboard() {
                             </Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => router.push({ pathname: '/chat', params: { chatTitle: chat.id, userId: userId  } })}>
+                        <TouchableOpacity onPress={() =>{ setMessages([]); router.push({ pathname: '/chat', params: { chatTitle: chat.id, userId: userId  } })}} >
                             <Text style={{ color: theme.text, fontSize: 16 }}>{'>'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -97,7 +86,7 @@ export default function Dashboard() {
                 <View style={{ height: 2, backgroundColor: '#444' }} />
 
                 <View style={{ flexDirection: 'column', paddingTop: 20, paddingHorizontal: 20 }}>
-                    <TouchableOpacity   onPress={handleClearChats} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+                    <TouchableOpacity   onPress={() => handleClearChats(userId as string)} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
                         <Image
                             source={require('../assets/images/iconoBasura.png')}
                             style={{ width: 25, height: 25, tintColor: theme.ImageBackground }}

@@ -3,23 +3,36 @@ import React, { useContext, useEffect } from 'react';
 import { Message } from '@/interfaces/AppInterfaces';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DataContext } from '../context/dataContext';
-import { useTheme } from '../context/themeContext'; // Importamos el tema
+import { useTheme } from '../context/themeContext'; 
+
 
 export default function Chat() {
     const router = useRouter();
     const { chatTitle, userId } = useLocalSearchParams();
     const { messages, getResponse, isLoading, getMessages, setMessages } = useContext(DataContext);
-    const { theme } = useTheme(); // Obtenemos los colores del tema
+    const { theme } = useTheme(); 
     const [input, setInput] = React.useState("");
+    
 
+    // useEffect hook to get messages when chatTitle or userId changes
     useEffect(() => {
         if (!chatTitle) {
-            setMessages([]); // Limpiar chat si es nuevo
-        } else {
+            console.log("No hay chat activo, esperando nuevo chat...");
+            setMessages([]); // ✅ Limpia mensajes si no hay un título
+            return;
+        }
+    
+        if (chatTitle && userId) {
+            console.log(`Cargando mensajes para el chat: "${chatTitle}"`);
+            setMessages([]); // ✅ Limpiar mensajes antes de cargar uno nuevo
             getMessages(userId as string, chatTitle as string);
         }
     }, [chatTitle, userId]);
+    
+    
 
+    
+    // Render each message , user or bot message with some styles
     const renderItem = ({ item }: { item: Message }) => (
         <View style={{
             alignSelf: item.sender === userId ? 'flex-end' : 'flex-start',
@@ -33,6 +46,7 @@ export default function Chat() {
         </View>
     );
 
+    // Main view of the chat
     return (
         <View style={{ flex: 1, backgroundColor: theme.background }}>
             {/* Header */}
@@ -40,7 +54,7 @@ export default function Chat() {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                paddingVertical: 15,
+                paddingTop:30 ,
                 paddingHorizontal: 20,
                 backgroundColor: theme.header
             }}>
@@ -54,8 +68,8 @@ export default function Chat() {
                 />
             </View>
 
-            {/* Línea divisoria */}
-            <View style={{ height: 1, backgroundColor: theme.borderColor }} />
+            {/* Divisory */}
+            <View style={{ height: 1, backgroundColor: theme.borderColor, marginTop:20 }} />
 
             <FlatList
                 data={messages}

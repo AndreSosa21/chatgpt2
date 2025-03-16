@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AuthContext } from '../context/authContext';
+import { ValidationContext } from '@/context/ValidationContext';
 
 
 export default function LoginScreen() {
@@ -9,6 +10,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const { handleLogin, signUp } = useContext(AuthContext)
+  const { errorMessage } = useContext(ValidationContext);
 
   
 
@@ -33,6 +35,7 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           secureTextEntry
         />
+        {errorMessage && <Text style={{ color: "red", marginBottom: 10 }}>{errorMessage}</Text>}
         
 
         <TouchableOpacity style={{ backgroundColor: '#58A081', padding: 15, borderRadius: 5, alignItems: 'center', marginBottom: 10 }} onPress={() => handleLogin(email, password)}>
