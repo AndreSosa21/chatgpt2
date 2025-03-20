@@ -30,7 +30,7 @@ export default function Dashboard() {
                     justifyContent: 'space-between',
                     paddingVertical: 15,
                     paddingHorizontal: 20,
-                    paddingTop: 40
+                    paddingTop: 60
                 }}>
                     <View style={{ alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'center' }}>
                         <Image
